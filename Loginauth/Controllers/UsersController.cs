@@ -62,108 +62,45 @@ namespace Loginauth.Controllers
             ViewBag.Message = message;
             ViewBag.StatusOK = statusOK;
             return View(user);
-        }
+        } 
 
-        // GET: Users
-        public ActionResult Index()
+        public ActionResult VerifyAccount(string id)
         {
-            return View(db.Users.ToList());
-        }
+            bool statusOK = false;
+            string message = null;
 
-        // GET: Users/Details/5
-        public ActionResult Details(int? id)
-        {
-            if (id == null)
+            db.Configuration.ValidateOnSaveEnabled = false; //skip check confirm password
+
+            try
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                var user = db.Users.Where(a => a.ActivationCode == new Guid(id)).FirstOrDefault();
+                if (user != null)
+                {
+                    user.IsEmailVerified = true;
+                    db.SaveChanges();
+                    statusOK = true;
+                }
+                else
+                {
+                    message = "Invalid request";
+                }
             }
-            User user = db.Users.Find(id);
-            if (user == null)
+            catch (Exception e)
             {
-                return HttpNotFound();
+                message = e.Message;
             }
-            return View(user);
-        }
 
-        // GET: Users/Create
-        public ActionResult Create()
-        {
+            ViewBag.StatusOK = statusOK;
+            ViewBag.Message = message;
             return View();
         }
 
-        // POST: Users/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,FirstName,LastName,Email,Password,IsEmailVerified,ActivationCode")] User user)
-        {
-            if (ModelState.IsValid)
-            {
-                db.Users.Add(user);
-                db.SaveChanges();
-                return RedirectToAction("Index");
-            }
+        //Verify account
 
-            return View(user);
-        }
+        //Login
 
-        // GET: Users/Edit/5
-        public ActionResult Edit(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            User user = db.Users.Find(id);
-            if (user == null)
-            {
-                return HttpNotFound();
-            }
-            return View(user);
-        }
+        //Logout
 
-        // POST: Users/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,FirstName,LastName,Email,Password,IsEmailVerified,ActivationCode")] User user)
-        {
-            if (ModelState.IsValid)
-            {
-                db.Entry(user).State = EntityState.Modified;
-                db.SaveChanges();
-                return RedirectToAction("Index");
-            }
-            return View(user);
-        }
-
-        // GET: Users/Delete/5
-        public ActionResult Delete(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            User user = db.Users.Find(id);
-            if (user == null)
-            {
-                return HttpNotFound();
-            }
-            return View(user);
-        }
-
-        // POST: Users/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int id)
-        {
-            User user = db.Users.Find(id);
-            db.Users.Remove(user);
-            db.SaveChanges();
-            return RedirectToAction("Index");
-        }
 
         protected override void Dispose(bool disposing)
         {
@@ -184,7 +121,7 @@ namespace Loginauth.Controllers
         [NonAction]
         public void SendVerificationEmail(string email, string activationCode)
         {
-            var verifyUrl = "/User/VerifyAccount/" + activationCode;
+            var verifyUrl = "/Users/VerifyAccount/" + activationCode;
             var link = Request.Url.AbsoluteUri.Replace(Request.Url.PathAndQuery, verifyUrl);
 
             var fromEmail = new MailAddress(ConfigurationManager.AppSettings["adminEmail"],
