@@ -1,7 +1,7 @@
 # Loginauth
 ASP.NET MVC5 with EF6 - login module with email confirmation
 
-demonstrate
+Demonstrate
 - Database-first (SQLServer Express)
 - Partial class model
 - Metadata class
