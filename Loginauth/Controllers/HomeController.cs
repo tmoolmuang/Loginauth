@@ -13,6 +13,18 @@ namespace Loginauth.Controllers
             return View();
         }
 
+        [Authorize]
+        public ActionResult AuthContent()
+        {
+            return View();
+        }
+
+        [Authorize]
+        public ActionResult Settings()
+        {
+            return View();
+        }
+
         public ActionResult About()
         {
             ViewBag.Message = "Your application description page.";

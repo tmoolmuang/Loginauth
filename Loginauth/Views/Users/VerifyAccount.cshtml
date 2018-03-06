@@ -5,13 +5,13 @@
 
 <h2>VerifyAccount</h2>
 
-@if (ViewBag.StatusOK)
+@if (ViewBag.Message == null)
 {
     <div class="alert-success">
         <strong>Your account has been sucessfully verified.</strong>
-        <br />
-        @Html.ActionLink("Login", "Login", "User")
     </div>
+    <br />
+    @Html.ActionLink("Login", "Login", "Users", null, new { @class = "btn btn-primary" })
 }
 else
 {

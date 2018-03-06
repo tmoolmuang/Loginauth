@@ -70,7 +70,7 @@ else
 {
     if (ViewBag.statusOK)
     {
-        //registered
+        //registered successful
         <div class="alert-success">
             @ViewBag.Message
         </div>
@@ -83,10 +83,6 @@ else
         </div>
     }
 }
-
-<div>
-    @Html.ActionLink("Login", "Index")
-</div>
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")

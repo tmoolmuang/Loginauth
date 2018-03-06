@@ -9,6 +9,7 @@ using System.Web;
 using System.Web.Mvc;
 using Loginauth.Models;
 using System.Configuration;
+using System.Web.Security;
 
 namespace Loginauth.Controllers
 {
@@ -16,7 +17,6 @@ namespace Loginauth.Controllers
     {
         private PacificEntities db = new PacificEntities();
 
-        //Registration
         public ActionResult Registration()
         {
             return View();
@@ -52,13 +52,14 @@ namespace Loginauth.Controllers
 
                 //Send email to user
                 SendVerificationEmail(user.Email, user.ActivationCode.ToString());
-                message = "Registration is completed. Please check you email : " + user.Email;
+                message = "Registration is completed. Please check you email to confirm : " + user.Email;
                 statusOK = true;
             }
             else
             {
                 message = "Improper model";
             }
+
             ViewBag.Message = message;
             ViewBag.StatusOK = statusOK;
             return View(user);
@@ -66,19 +67,16 @@ namespace Loginauth.Controllers
 
         public ActionResult VerifyAccount(string id)
         {
-            bool statusOK = false;
+            //Verify account
             string message = null;
-
-            db.Configuration.ValidateOnSaveEnabled = false; //skip check confirm password
-
             try
             {
                 var user = db.Users.Where(a => a.ActivationCode == new Guid(id)).FirstOrDefault();
                 if (user != null)
                 {
                     user.IsEmailVerified = true;
+                    db.Configuration.ValidateOnSaveEnabled = false; //skip check confirm password
                     db.SaveChanges();
-                    statusOK = true;
                 }
                 else
                 {
@@ -87,20 +85,74 @@ namespace Loginauth.Controllers
             }
             catch (Exception e)
             {
+                //most likely invalid Guid
                 message = e.Message;
             }
 
-            ViewBag.StatusOK = statusOK;
             ViewBag.Message = message;
             return View();
         }
 
-        //Verify account
+        public ActionResult Login()
+        {
+            return View();
+        }
 
-        //Login
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Login(UserLogin login, string returnUrl = "")
+        {
+            string message = null;
+            var v = db.Users.Where(a => a.Email == login.Email).FirstOrDefault();
+            if (v != null)
+            {
+                if (string.Compare(Encrypt.Hash(login.Password), v.Password) == 0)
+                {
+                    if (!v.IsEmailVerified)
+                    {
+                        message = "Please verify you email first before you can log in : " + v.Email;
+                    }
+                    else
+                    {
+                        int timeout = login.RememberMe ? 525600 : 20; // 1 yr
+                        var ticket = new FormsAuthenticationTicket(login.Email, login.RememberMe, timeout);
+                        string encrypted = FormsAuthentication.Encrypt(ticket);
+                        var cookie = new HttpCookie(FormsAuthentication.FormsCookieName, encrypted);
+                        cookie.Expires = DateTime.Now.AddMinutes(timeout);
+                        cookie.HttpOnly = true;
+                        Response.Cookies.Add(cookie);
 
-        //Logout
+                        if (Url.IsLocalUrl(returnUrl))
+                        {
+                            //redirect to [Authorized] view where it was initially intended 
+                            return Redirect(returnUrl);
+                        }
+                        else
+                        {
+                            return RedirectToAction("Index", "Home");
+                        }
+                    }
+                }
+                else
+                {
+                    message = "Incorrect password provided";
+                }
+            }
+            else
+            {
+                message = "Email is not registered";
+            }
 
+            ViewBag.Message = message;
+            return View();
+        }
+
+        [Authorize]
+        public ActionResult Logout()
+        {
+            FormsAuthentication.SignOut();
+            return RedirectToAction("Login");
+        }
 
         protected override void Dispose(bool disposing)
         {
@@ -149,7 +201,6 @@ namespace Loginauth.Controllers
                 IsBodyHtml = true
             })
             smtp.Send(message);
-
         }
     }
 }
