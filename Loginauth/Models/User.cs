@@ -21,5 +21,6 @@ namespace Loginauth.Models
         public string Password { get; set; }
         public bool IsEmailVerified { get; set; }
         public System.Guid ActivationCode { get; set; }
+        public Nullable<System.Guid> ResetPasswordCode { get; set; }
     }
 }

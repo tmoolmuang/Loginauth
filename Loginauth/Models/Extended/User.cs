@@ -11,6 +11,7 @@ namespace Loginauth.Models
     public partial class User
     {
         public string ConfirmPassword { get; set; }
+        public bool RememberMe { get; set; }
 
         public User()
         {
@@ -39,5 +40,8 @@ namespace Loginauth.Models
         [DataType(DataType.Password)]
         [Compare("Password", ErrorMessage = "Confirm password do not match")]
         public string ConfirmPassword { get; set; }
+
+        [Display(Name = "Remember me")]
+        public bool RememberMe { get; set; }
     }
 }

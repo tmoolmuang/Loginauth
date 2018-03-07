@@ -275,16 +275,13 @@
     <Content Include="Scripts\popper.js.map" />
     <Content Include="Scripts\popper-utils.min.js.map" />
     <Content Include="Scripts\popper-utils.js.map" />
-    <Content Include="Views\Users\Create.cshtml" />
-    <Content Include="Views\Users\Delete.cshtml" />
-    <Content Include="Views\Users\Details.cshtml" />
-    <Content Include="Views\Users\Edit.cshtml" />
-    <Content Include="Views\Users\Index.cshtml" />
     <Content Include="Views\Users\Registration.cshtml" />
     <Content Include="Views\Users\VerifyAccount.cshtml" />
     <Content Include="Views\Users\Login.cshtml" />
     <Content Include="Views\Home\AuthContent.cshtml" />
     <Content Include="Views\Home\Settings.cshtml" />
+    <Content Include="Views\Users\ForgotPassword.cshtml" />
+    <Content Include="Views\Users\VerifyResetPassword.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
