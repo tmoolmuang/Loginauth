@@ -170,7 +170,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>ModelUser.edmx</DependentUpon>
     </Compile>
-    <Compile Include="Models\UserLogin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Models\User.cs">
       <DependentUpon>ModelUser.tt</DependentUpon>
