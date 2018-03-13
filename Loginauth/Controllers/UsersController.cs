@@ -15,7 +15,7 @@ namespace Loginauth.Controllers
 {
     public class UsersController : Controller
     {
-        private PacificEntities db = new PacificEntities();
+        private ShamuEntities db = new ShamuEntities();
 
         public ActionResult Registration()
         {
@@ -110,10 +110,6 @@ namespace Loginauth.Controllers
                 {
                     if (string.Compare(Encrypt.Hash(model.Password), user.Password) == 0)
                     {
-                        message = "Incorrect password provided";
-                    }
-                    else
-                    {
                         int timeout = model.RememberMe ? 525600 : 20; // 1 yr
                         var ticket = new FormsAuthenticationTicket(model.Email, model.RememberMe, timeout);
                         string encrypted = FormsAuthentication.Encrypt(ticket);
@@ -132,8 +128,12 @@ namespace Loginauth.Controllers
                             return RedirectToAction("Index", "Home");
                         }
                     }
+                    else
+                    {
+                        message = "Incorrect password provided";
+                    } 
                 }
-                else
+            else
                 {
                     message = "Please verify you email first before you can log in : " + user.Email;                   
                 }
@@ -266,10 +266,14 @@ namespace Loginauth.Controllers
             var verifyUrl = "/Users/VerifyAccount/" + activationCode;
             var link = Request.Url.AbsoluteUri.Replace(Request.Url.PathAndQuery, verifyUrl);
 
-            var fromEmail = new MailAddress(ConfigurationManager.AppSettings["adminEmail"],
-                                            ConfigurationManager.AppSettings["adminName"]);
+            //var fromEmail = new MailAddress(ConfigurationManager.AppSettings["adminEmail"],
+            //                                ConfigurationManager.AppSettings["adminName"]);
+            //var toEmail = new MailAddress(email);
+            //var fromEmailPassword = ConfigurationManager.AppSettings["adminPassword"];
+            var fromEmail = new MailAddress(Environment.GetEnvironmentVariable("APPSETTING_adminEmail"),
+                                Environment.GetEnvironmentVariable("APPSETTING_adminName"));
             var toEmail = new MailAddress(email);
-            var fromEmailPassword = ConfigurationManager.AppSettings["adminPassword"];
+            var fromEmailPassword = Environment.GetEnvironmentVariable("APPSETTING_adminPassword");
             var subject = "You account has been created!";
             string body = "<br />Please click link below to verify your account" +
                 "<br /><br /><a href='" + link + "'>" + link + "</a>";
@@ -299,10 +303,14 @@ namespace Loginauth.Controllers
             var verifyUrl = "/Users/VerifyResetPassword/" + passwordResetCode;
             var link = Request.Url.AbsoluteUri.Replace(Request.Url.PathAndQuery, verifyUrl);
 
-            var fromEmail = new MailAddress(ConfigurationManager.AppSettings["adminEmail"],
-                                            ConfigurationManager.AppSettings["adminName"]);
+            //var fromEmail = new MailAddress(ConfigurationManager.AppSettings["adminEmail"],
+            //                                ConfigurationManager.AppSettings["adminName"]);
+            //var toEmail = new MailAddress(email);
+            //var fromEmailPassword = ConfigurationManager.AppSettings["adminPassword"];
+            var fromEmail = new MailAddress(Environment.GetEnvironmentVariable("APPSETTING_adminEmail"),
+                    Environment.GetEnvironmentVariable("APPSETTING_adminName"));
             var toEmail = new MailAddress(email);
-            var fromEmailPassword = ConfigurationManager.AppSettings["adminPassword"];
+            var fromEmailPassword = Environment.GetEnvironmentVariable("APPSETTING_adminPassword");
             var subject = "Request for password reset";
             string body = "<br />Please click link below to reset your password" +
                 "<br /><br /><a href='" + link + "'>" + link + "</a>";

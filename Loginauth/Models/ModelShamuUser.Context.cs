@@ -13,10 +13,10 @@ namespace Loginauth.Models
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
     
-    public partial class PacificEntities : DbContext
+    public partial class ShamuEntities : DbContext
     {
-        public PacificEntities()
-            : base("name=PacificEntities")
+        public ShamuEntities()
+            : base("name=ShamuEntities")
         {
         }
     

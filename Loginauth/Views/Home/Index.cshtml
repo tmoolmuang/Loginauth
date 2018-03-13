@@ -12,19 +12,19 @@
     <div class="col-md-4">
         <h2>Getting started</h2>
         @if (Request.IsAuthenticated)
-        {
-            <p>Welcome @HttpContext.Current.User.Identity.Name</p>
-            @Html.ActionLink("Logout", "Logout", "Users", null, new { @class = "btn btn-primary" })
-        }
-        else
-        {
-            <p>Please register or login</p>
-            @Html.ActionLink("Register", "Registration", "Users", null, new { @class = "btn btn-primary" })
-            <span>&nbsp;</span>
-            @Html.ActionLink("Login", "Login", "Users", null, new { @class = "btn btn-primary" })
-            <br />
-        }
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301865">Learn more &raquo;</a></p>
+    {
+        <p>Welcome @HttpContext.Current.User.Identity.Name</p>
+        @Html.ActionLink("Logout", "Logout", "Users", null, new { @class = "btn btn-primary" })
+}
+else
+{
+    <p>Please register or login</p>
+    @Html.ActionLink("Register", "Registration", "Users", null, new { @class = "btn btn-primary" })
+    <span>&nbsp;</span>
+    @Html.ActionLink("Login", "Login", "Users", null, new { @class = "btn btn-primary" })
+    <br />
+}
+    <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301865">Learn more &raquo;</a></p>
     </div>
     <div class="col-md-4">
         <h2>Get more libraries</h2>
