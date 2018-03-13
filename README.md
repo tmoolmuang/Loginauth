@@ -15,3 +15,9 @@ Demonstrate
 - External secret config file (for admin email authenticaion)
 - AuthorizeAttribute Class
 - Cookie setting
+- Azure account creation and registration
+- Azure SQL-Server/database creation
+- Azure application service creation
+- Azure application settings and connection strings (for Entity Framework)
+
+Live demo site: https://login101.azurewebsites.net
